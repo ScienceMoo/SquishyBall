@@ -76,6 +76,21 @@ public class ParticleSystem implements SceneGraphNode, Function, Filter {
         Particle p11 = new Particle( new Point3d(-0.279 * radius, -0.853 * radius, -0.445 * radius), new Vector3d(0, 0, 0), p_index++);
         Particle p12 = new Particle( new Point3d(0.279 * radius,-0.853 * radius, 0.445 * radius), new Vector3d(0, 0, 0), p_index++ );
         Particle p13 = new Particle( new Point3d(0.722 * radius,-0.5244 * radius, -0.445 * radius), new Vector3d(0, 0, 0), p_index++ );
+
+//        radius = 0.8;
+//        Particle p14 = new Particle( new Point3d(0, 0, 0), new Vector3d(0, 0, 0), p_index++);
+//        Particle p15 = new Particle( new Point3d(0, 0, radius), new Vector3d(0, 0, 0), p_index++ );
+//        Particle p16 = new Particle( new Point3d(0, 0, -radius), new Vector3d(0, 0, 0), p_index++ );
+//        Particle p17 = new Particle( new Point3d(0.8973 * radius, 0, 0.445 * radius), new Vector3d(0, 0, 0), p_index++ );
+//        Particle p18 = new Particle( new Point3d(0.722 * radius, 0.5244 * radius, -0.445 * radius), new Vector3d(0, 0, 0), p_index++ );
+//        Particle p19 = new Particle( new Point3d(0.279 * radius, 0.853 * radius, 0.445 * radius), new Vector3d(0, 0, 0), p_index++);
+//        Particle p20 = new Particle( new Point3d(-0.279 * radius, 0.853 * radius, -0.445 * radius), new Vector3d(0, 0, 0), p_index++ );
+//        Particle p21 = new Particle( new Point3d(-0.722 * radius, 0.5244 * radius, 0.445 * radius), new Vector3d(0, 0, 0), p_index++ );
+//        Particle p22 = new Particle( new Point3d(-0.8973 * radius, 0, -0.445 * radius), new Vector3d(0, 0, 0), p_index++ );
+//        Particle p23 = new Particle( new Point3d(-0.722 * radius, -0.5244 * radius, 0.445 * radius), new Vector3d(0, 0, 0), p_index++ );
+//        Particle p24 = new Particle( new Point3d(-0.279 * radius, -0.853 * radius, -0.445 * radius), new Vector3d(0, 0, 0), p_index++);
+//        Particle p25 = new Particle( new Point3d(0.279 * radius,-0.853 * radius, 0.445 * radius), new Vector3d(0, 0, 0), p_index++ );
+//        Particle p26 = new Particle( new Point3d(0.722 * radius,-0.5244 * radius, -0.445 * radius), new Vector3d(0, 0, 0), p_index++ );
         particles.add( p1 );
         particles.add( p2 );
         particles.add( p3 );
@@ -143,6 +158,66 @@ public class ParticleSystem implements SceneGraphNode, Function, Filter {
         springs.add( new Spring( p11, p12 ) );
         springs.add( new Spring( p12, p13 ) );
         springs.add( new Spring( p13, p4 ) );
+
+        Vector3d v1 = new Vector3d();
+        Vector3d v2 = new Vector3d();
+
+        for ( int i = 3; i < 13; i++ ) {
+            Particle triangle_p1;
+            Particle triangle_p2;
+            Particle triangle_p3;
+            triangle_p1 = particles.get(i);
+            if (i == 12) {
+                triangle_p2 = particles.get(3);
+                triangle_p3 = particles.get(4);
+            }
+            else if (i == 11) {
+                triangle_p2 = particles.get(i+1);
+                triangle_p3 = particles.get(3);
+            }
+            else {
+                if (i % 2 == 0) {
+                    triangle_p2 = particles.get(i+1);
+                    triangle_p3 = particles.get(i+2);
+                }
+                else {
+                    triangle_p2 = particles.get(i+2);
+                    triangle_p3 = particles.get(i+1);
+                }
+
+            }
+
+            Particle[] t = new Particle[3];
+            t[0] = triangle_p1;
+            t[1] = triangle_p2;
+            t[2] = triangle_p3;
+            triangles.add(t);
+
+
+            if (i % 2 == 0) {
+                triangle_p1 = particles.get(2);
+            }
+            else {
+                triangle_p1 = particles.get(1);
+            }
+
+            triangle_p2 = particles.get(i);
+            if (i == 11) {
+                triangle_p3 = particles.get(3);
+            }
+            else if (i == 12) {
+                triangle_p3 = particles.get(4);
+            }
+            else {
+                triangle_p3 = particles.get(i+2);
+            }
+
+            t = new Particle[3];
+            t[0] = triangle_p1;
+            t[1] = triangle_p2;
+            t[2] = triangle_p3;
+            triangles.add(t);
+        }
 
         // triangle test
 //        Particle p1 = new Particle( new Point3d(300, 310, 10), new Vector3d(0, 0, 0), 0 );

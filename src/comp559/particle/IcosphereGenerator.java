@@ -1,4 +1,5 @@
 package comp559.particle;
+import java.util.LinkedList;
 import java.util.List;
 
 import com.jogamp.opengl.GL;
@@ -28,6 +29,8 @@ public class IcosphereGenerator implements SceneGraphNode {
      * particles for the purposes of rendering.
      */
     Particle[] mesh = null;
+
+    List<Particle[]> triangle_list;
 
     /**
      * Per particle normals for our grid, since we want to render them
@@ -66,11 +69,17 @@ public class IcosphereGenerator implements SceneGraphNode {
         int N = particles.size();
 //        double particleMass = 1.0 / (N*N);
         mesh = new Particle[N];
+        triangles = new LinkedList<Particle[]>();
+
         gridNormals = new Vector3d[N];
 
         for (int i = 0; i < particles.size(); i++) {
             mesh[i] = particles.get(i);
             gridNormals[i] = new Vector3d();
+        }
+
+        for (int i = 0; i < triangles.size(); i++) {
+            triangle_list.add(triangles.get(i));
         }
     }
 
