@@ -242,6 +242,7 @@ public class ParticleSystem implements SceneGraphNode, Function, Filter {
 //        triangles.add(t);
 
         surface.createSimpleIcosphere( particles, springs, triangles );
+        surface.subdivideIcosphere( particles, springs, triangles );
 
         init();
     }

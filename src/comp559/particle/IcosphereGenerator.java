@@ -7,6 +7,7 @@ import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLAutoDrawable;
 import javax.swing.JPanel;
 import javax.vecmath.Point3d;
+import javax.vecmath.Tuple3d;
 import javax.vecmath.Vector3d;
 
 import mintools.parameters.BooleanParameter;
@@ -29,7 +30,6 @@ public class IcosphereGenerator implements SceneGraphNode {
      * particles for the purposes of rendering.
      */
     Particle[] mesh = null;
-
     List<Particle[]> triangle_list;
 
     /**
@@ -83,16 +83,189 @@ public class IcosphereGenerator implements SceneGraphNode {
         }
     }
 
-    public void subdivideIcosphere(List<Spring> springs, List<Particle[]> triangles) {
+    public void subdivideIcosphere(List<Particle> particles, List<Spring> springs, List<Particle[]> triangles) {
 
-        int num_springs = springs.size();
-        Particle[] new_particles = new Particle[springs.size()];
-        List<Particle[]> new_triangles = new LinkedList<Particle[]>();
+        int num_triangles = triangles.size();
+        int num_particles = particles.size();
+        Vector3d zero = new Vector3d(0,0,0);
 
-        for (int i = 0; i < triangles.size(); i++) {
+        // this is used temporarily here but the actual new particles are appended to the system
+        Particle[] new_particles_temp = new Particle[springs.size()];
 
-            triangle_list.add(triangles.get(i));
+        List<Spring[]> springs_temp = new LinkedList<Spring[]>();
+        List<Particle[]> particles_temp2 = new LinkedList<Particle[]>();
+
+        int particle_index = num_particles;
+        Particle p0 = particles.get(0);
+
+        // first get spring indeces and create new particles
+        for (int i = 0; i < num_triangles; i++) {
+            Particle[] t = triangles.get(i);
+
+            Particle p1 = t[0];
+            Particle p2 = t[1];
+            Particle p3 = t[2];
+
+            Spring s1 = null;
+            Spring s2 = null;
+            Spring s3 = null;
+
+            Particle p1_new = null;
+            Particle p2_new = null;
+            Particle p3_new = null;
+
+            Particle[] t_new1 = new Particle[3];
+            Particle[] t_new2 = new Particle[3];
+            Particle[] t_new3 = new Particle[3];
+            Particle[] t_new4 = new Particle[3];
+
+            float factor = 1.1f;
+            // find spring from p1 to p2
+            for (int s = 0; s < p1.springs.size(); s++) {
+                if ((p1.springs.get(s).p2.index == p2.index) || (p1.springs.get(s).p1.index == p2.index )) {
+                    s1 = p1.springs.get(s);
+                    break;
+                }
+            }
+            // find spring from p2 to p3
+            for (int s = 0; s < p2.springs.size(); s++) {
+                if ((p2.springs.get(s).p2.index == p3.index)|| (p2.springs.get(s).p1.index == p3.index )) {
+                    s2 = p2.springs.get(s);
+                    break;
+                }
+            }
+            // find spring from p3 to p1
+            for (int s = 0; s < p3.springs.size(); s++) {
+                if ((p3.springs.get(s).p2.index == p1.index )|| (p3.springs.get(s).p1.index == p1.index )) {
+                    s3 = p3.springs.get(s);
+                    break;
+                }
+            }
+
+            if (s1 == null || s2 == null || s3 == null ) {
+                System.out.println("error");
+            }
+
+            Spring[] three_springs = {s1, s2, s3};
+            springs_temp.add(three_springs);
+
+            Point3d pos = new Point3d(0,0,0);
+
+            if (new_particles_temp[s1.index] != null) {
+                p1_new = new_particles_temp[s1.index];
+            }
+            else {
+                pos.set(p1.p);
+                pos.add(p2.p);
+                pos.scale(0.5);
+                pos.scale(factor);
+
+                p1_new = new Particle(pos, zero, particle_index++);
+                new_particles_temp[s1.index] = p1_new;
+                particles.add(p1_new);
+            }
+            if (new_particles_temp[s2.index] != null) {
+                p2_new = new_particles_temp[s2.index];
+            }
+            else {
+                pos.set(p2.p);
+                pos.add(p3.p);
+                pos.scale(0.5);
+                pos.scale(factor);
+
+                p2_new = new Particle(pos, zero, particle_index++);
+                new_particles_temp[s2.index] = p2_new;
+                particles.add(p2_new);
+            }
+            if (new_particles_temp[s3.index] != null) {
+                p3_new = new_particles_temp[s3.index];
+            }
+            else {
+                pos.set(p3.p);
+                pos.add(p1.p);
+                pos.scale(0.5);
+                pos.scale(factor);
+
+                p3_new = new Particle(pos, zero, particle_index++);
+                new_particles_temp[s3.index] = p3_new;
+                particles.add(p3_new);
+            }
+
+            Particle[] three_particles = {p1_new, p2_new, p3_new};
+            particles_temp2.add(three_particles);
+
+            // first triangle
+            t_new1[0] = p1;
+            t_new1[1] = p1_new;
+            t_new1[2] = p3_new;
+            // second triangle
+            t_new2[0] = p2;
+            t_new2[1] = p2_new;
+            t_new2[2] = p1_new;
+            // third triangle
+            t_new3[0] = p3;
+            t_new3[1] = p3_new;
+            t_new3[2] = p2_new;
+            // middle triangle
+            t_new4[0] = p1_new;
+            t_new4[1] = p2_new;
+            t_new4[2] = p3_new;
+
+            triangles.add(t_new1);
+            triangles.add(t_new2);
+            triangles.add(t_new3);
+            triangles.add(t_new4);
+
         }
+
+        int spring_index = 0;
+        // start over to retrieve new particles
+        particle_index = num_particles;
+
+        // add new springs and remove old springs, remove old triangles also
+        for (int i = 0; i < num_triangles; i++) {
+            Particle[] t = triangles.get(0);
+            triangles.remove(t);
+
+            Particle p1 = t[0];
+            Particle p2 = t[1];
+            Particle p3 = t[2];
+
+            Spring s1 = springs_temp.get(i)[0];
+            Spring s2 = springs_temp.get(i)[1];
+            Spring s3 = springs_temp.get(i)[2];
+
+            Particle p1_new = particles_temp2.get(i)[0];
+            Particle p2_new = particles_temp2.get(i)[1];
+            Particle p3_new = particles_temp2.get(i)[2];
+
+            // side 1
+            springs.remove(s1);
+            springs.add(new Spring(p1, p1_new, spring_index++));
+            springs.add(new Spring(p1_new, p2, spring_index++));
+
+            // side 2
+            springs.remove(s2);
+            springs.add(new Spring(p2, p2_new, spring_index++));
+            springs.add(new Spring(p2_new, p3, spring_index++));
+
+            // side 3
+            springs.remove(s3);
+            springs.add(new Spring(p3, p3_new, spring_index++));
+            springs.add(new Spring(p3_new, p1, spring_index++));
+
+            // add springs for middle triangle
+            springs.add(new Spring(p1_new, p2_new, spring_index++));
+            springs.add(new Spring(p2_new, p3_new, spring_index++));
+            springs.add(new Spring(p3_new, p1_new, spring_index++));
+
+            // inside spring
+            springs.add(new Spring(p0, p1_new, spring_index++));
+            springs.add(new Spring(p0, p2_new, spring_index++));
+            springs.add(new Spring(p0, p3_new, spring_index++));
+
+        }
+
     }
 
     public void init(GLAutoDrawable drawable) {
