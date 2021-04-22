@@ -106,58 +106,59 @@ public class ParticleSystem implements SceneGraphNode, Function, Filter {
         particles.add( p13 );
 //         p1.pinned = true;
         // middle vertex
-        springs.add( new Spring( p1, p2 ) );
-        springs.add( new Spring( p1, p3 ) );
-        springs.add( new Spring( p1, p4 ) );
-        springs.add( new Spring( p1, p5 ) );
-        springs.add( new Spring( p1, p6 ) );
-        springs.add( new Spring( p1, p7 ) );
-        springs.add( new Spring( p1, p8 ) );
-        springs.add( new Spring( p1, p9 ) );
-        springs.add( new Spring( p1, p10 ) );
-        springs.add( new Spring( p1, p11 ) );
-        springs.add( new Spring( p1, p12 ) );
-        springs.add( new Spring( p1, p13 ) );
+        int s_index = 0;
+        springs.add( new Spring( p1, p2, s_index++) );
+        springs.add( new Spring( p1, p3, s_index++ ) );
+        springs.add( new Spring( p1, p4, s_index++ ) );
+        springs.add( new Spring( p1, p5, s_index++ ) );
+        springs.add( new Spring( p1, p6, s_index++ ) );
+        springs.add( new Spring( p1, p7, s_index++ ) );
+        springs.add( new Spring( p1, p8, s_index++ ) );
+        springs.add( new Spring( p1, p9, s_index++ ) );
+        springs.add( new Spring( p1, p10, s_index++ ) );
+        springs.add( new Spring( p1, p11, s_index++ ) );
+        springs.add( new Spring( p1, p12, s_index++ ) );
+        springs.add( new Spring( p1, p13, s_index++ ) );
 
         // top vertex to top row
-        springs.add( new Spring( p2, p4 ) );
-        springs.add( new Spring( p2, p6 ) );
-        springs.add( new Spring( p2, p8 ) );
-        springs.add( new Spring( p2, p10 ) );
-        springs.add( new Spring( p2, p12 ) );
+        springs.add( new Spring( p2, p4, s_index++ ) );
+        springs.add( new Spring( p2, p6, s_index++ ) );
+        springs.add( new Spring( p2, p8, s_index++ ) );
+        springs.add( new Spring( p2, p10, s_index++ ) );
+        springs.add( new Spring( p2, p12, s_index++ ) );
 
         // bottom vertex to bottom row
-        springs.add( new Spring( p3, p5 ) );
-        springs.add( new Spring( p3, p7 ) );
-        springs.add( new Spring( p3, p9 ) );
-        springs.add( new Spring( p3, p11 ) );
-        springs.add( new Spring( p3, p13 ) );
+        springs.add( new Spring( p3, p5, s_index++ ) );
+        springs.add( new Spring( p3, p7, s_index++ ) );
+        springs.add( new Spring( p3, p9, s_index++ ) );
+        springs.add( new Spring( p3, p11, s_index++ ) );
+        springs.add( new Spring( p3, p13, s_index++ ) );
 
         // top row
-        springs.add( new Spring( p4, p6) );
-        springs.add( new Spring( p6, p8) );
-        springs.add( new Spring( p8, p10) );
-        springs.add( new Spring( p10, p12) );
-        springs.add( new Spring( p12, p4) );
+        springs.add( new Spring( p4, p6, s_index++) );
+        springs.add( new Spring( p6, p8, s_index++) );
+        springs.add( new Spring( p8, p10, s_index++) );
+        springs.add( new Spring( p10, p12, s_index++) );
+        springs.add( new Spring( p12, p4, s_index++) );
 
         // bottom row
-        springs.add( new Spring( p5, p7) );
-        springs.add( new Spring( p7, p9) );
-        springs.add( new Spring( p9, p11) );
-        springs.add( new Spring( p11, p13) );
-        springs.add( new Spring( p13, p5) );
+        springs.add( new Spring( p5, p7, s_index++) );
+        springs.add( new Spring( p7, p9, s_index++) );
+        springs.add( new Spring( p9, p11, s_index++) );
+        springs.add( new Spring( p11, p13, s_index++) );
+        springs.add( new Spring( p13, p5, s_index++) );
 
         // rest of springs
-        springs.add( new Spring( p4, p5 ) );
-        springs.add( new Spring( p5, p6 ) );
-        springs.add( new Spring( p6, p7 ) );
-        springs.add( new Spring( p7, p8 ) );
-        springs.add( new Spring( p8, p9 ) );
-        springs.add( new Spring( p9, p10 ) );
-        springs.add( new Spring( p10, p11 ) );
-        springs.add( new Spring( p11, p12 ) );
-        springs.add( new Spring( p12, p13 ) );
-        springs.add( new Spring( p13, p4 ) );
+        springs.add( new Spring( p4, p5, s_index++ ) );
+        springs.add( new Spring( p5, p6, s_index++ ) );
+        springs.add( new Spring( p6, p7, s_index++ ) );
+        springs.add( new Spring( p7, p8, s_index++ ) );
+        springs.add( new Spring( p8, p9, s_index++ ) );
+        springs.add( new Spring( p9, p10, s_index++ ) );
+        springs.add( new Spring( p10, p11, s_index++ ) );
+        springs.add( new Spring( p11, p12, s_index++ ) );
+        springs.add( new Spring( p12, p13, s_index++ ) );
+        springs.add( new Spring( p13, p4, s_index++ ) );
 
         Vector3d v1 = new Vector3d();
         Vector3d v2 = new Vector3d();
@@ -231,9 +232,9 @@ public class ParticleSystem implements SceneGraphNode, Function, Filter {
 //        p1.pinned = true;
 //        p2.pinned = true;
 //        p3.pinned = true;
-//        springs.add( new Spring( p1, p2 ) );
-//        springs.add( new Spring( p2, p3 ) );
-//        springs.add( new Spring( p3, p1 ) );
+//        springs.add( new Spring( p1, p2, 0 ) );
+//        springs.add( new Spring( p2, p3, 1 ) );
+//        springs.add( new Spring( p3, p1, 2) );
 //        Particle[] t = new Particle[3];
 //        t[0] = p1;
 //        t[1] = p2;
@@ -543,8 +544,8 @@ public class ParticleSystem implements SceneGraphNode, Function, Filter {
      * @param p2
      * @return the new spring
      */
-    public Spring createSpring( Particle p1, Particle p2 ) {
-        Spring s = new Spring( p1, p2 );
+    public Spring createSpring( Particle p1, Particle p2, int index ) {
+        Spring s = new Spring( p1, p2, index );
         springs.add( s );
         return s;
     }
@@ -555,8 +556,8 @@ public class ParticleSystem implements SceneGraphNode, Function, Filter {
      * @param p2
      * @return the new spring
      */
-    public Spring createMouseSpring( Particle p1, Particle p2, double k, double c, double l0) {
-        Spring s = new Spring( p1, p2, k, c, l0, false);
+    public Spring createMouseSpring( Particle p1, Particle p2, int index, double k, double c, double l0) {
+        Spring s = new Spring( p1, p2, index, k, c, l0, false);
         springs.add( s );
         return s;
     }
@@ -697,7 +698,7 @@ public class ParticleSystem implements SceneGraphNode, Function, Filter {
     public DoubleParameter mass = new DoubleParameter( "mass", 0.5, 0.1, 100 );
     public BooleanParameter useGravity = new BooleanParameter( "use gravity", true );
     public DoubleParameter gravity = new DoubleParameter( "gravity", 9.8, 0.01, 1000 );
-    public DoubleParameter springStiffness = new DoubleParameter( "spring stiffness", 300, 0, 10000 );
+    public DoubleParameter springStiffness = new DoubleParameter( "spring stiffness", 480, 0, 10000 );
     public DoubleParameter springDamping = new DoubleParameter( "spring damping", 1.5, 0, 50 );
     public DoubleParameter viscousDamping = new DoubleParameter( "viscous damping", 0, 0, 10 );
     public DoubleParameter restitution = new DoubleParameter( "r", 0, 0, 1 );

@@ -13,6 +13,7 @@ import no.uib.cipr.matrix.Vector;
  */
 public class Spring {
 
+    int index;
     Particle p1;
     Particle p2;
     boolean visible;
@@ -33,7 +34,8 @@ public class Spring {
      * @param p1
      * @param p2
      */
-    public Spring( Particle p1, Particle p2 ) {
+    public Spring( Particle p1, Particle p2, int index ) {
+        this.index = index;
         this.p1 = p1;
         this.p2 = p2;
         this.visible = true;
@@ -50,7 +52,8 @@ public class Spring {
      * @param p1
      * @param p2
      */
-    public Spring( Particle p1, Particle p2, double speficic_k, double speficic_c, double specific_l0, boolean vis ) {
+    public Spring( Particle p1, Particle p2, int index, double speficic_k, double speficic_c, double specific_l0, boolean vis ) {
+        this.index = index;
         this.p1 = p1;
         this.p2 = p2;
         this.k = speficic_k;
