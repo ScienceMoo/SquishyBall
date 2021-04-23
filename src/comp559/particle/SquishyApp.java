@@ -49,7 +49,7 @@ public class SquishyApp implements SceneGraphNode, Interactor {
      */
     public SquishyApp() {
         system = new ParticleSystem();
-        system.integrator = forwardEuler;
+        system.integrator = rk4;
 
         // create the simulation viewing window
         // used to be 640 by 360 but i changed it, doesn't really matter
@@ -108,73 +108,41 @@ public class SquishyApp implements SceneGraphNode, Interactor {
      */
     private boolean stepped = false;
 
-    private JTextField saveFileName = new JTextField("testSystem.xlsx", 16);
     private BooleanParameter run = new BooleanParameter( "simulate", false );
-    private DoubleParameter stepsize = new DoubleParameter( "step size", 0.05, 1e-5, 1 );
-    private IntParameter substeps = new IntParameter( "sub steps", 10, 1, 100);
-    private BooleanParameter drawAxis = new BooleanParameter( "draw axis (to help get your bearings in 3D)", true );
+    private DoubleParameter stepsize = new DoubleParameter( "step size", 0.0185, 1e-5, 1 );
+    private IntParameter substeps = new IntParameter( "sub steps", 20, 1, 100);
+    private BooleanParameter drawAxis = new BooleanParameter( "draw axis (to help get your bearings in 3D)", false );
 
     @Override
     public JPanel getControls() {
         HorizontalFlowPanel hfp0 = new HorizontalFlowPanel();
-        hfp0.add( saveFileName );
-
-        JButton saveButton = new JButton("Save particle system");
-        hfp0.add( saveButton );
 
         HorizontalFlowPanel hfp02 = new HorizontalFlowPanel();
 
-        JButton loadButton = new JButton("Load particle system");
-        loadButton.addActionListener( new ActionListener() {
+        JButton subdivideButton = new JButton("Subdivide");
+        subdivideButton.addActionListener( new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                File f = FileSelect.select("xlsx", "", "load", "./savedSystems", true );
-                if ( f != null ) {
-//                    system.loadSystem( f.getPath() );
-                }
+                system.subdivide( );
             }
         });
 
-        hfp02.add( loadButton );
+        hfp02.add( subdivideButton );
+
+        JButton resetButton = new JButton("Reset");
+        resetButton.addActionListener( new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                system.createSimpleIcosphere( );
+            }
+        });
+
+        hfp02.add( resetButton );
 
         VerticalFlowPanel vfp = new VerticalFlowPanel();
         vfp.add( hfp0.getPanel() );
         vfp.add( hfp02.getPanel() );
 
-        saveButton.addActionListener( new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-//                system.saveSystem(saveFileName.getText());
-            }
-        });
-
-        JButton create1 = new JButton("create test system 1");
-        vfp.add( create1 );
-        create1.addActionListener( new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-//                system.createSystem(1);
-            }
-        });
-        
-        JButton create2 = new JButton("create test system 2");
-        vfp.add( create2 );
-        create2.addActionListener( new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-//                system.createSystem(2);
-            }
-        });
-        
-        JButton create3 = new JButton("create test system 3");
-        vfp.add( create3 );
-        create3.addActionListener( new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-//                system.createSystem(3);
-            }
-        });
-        
         HorizontalFlowPanel hfp1 = new HorizontalFlowPanel();
         JButton res2 = new JButton("1280x720");
         hfp1.add( res2);
@@ -196,13 +164,15 @@ public class SquishyApp implements SceneGraphNode, Interactor {
         });
 
         vfp.add( hfp1.getPanel() );
-        
+
+        vfp.add( system.getControls() );
+
         vfp.add( videoFileName );
         vfp.add( record.getControls() );
         vfp.add( run.getControls() );
         vfp.add( stepsize.getSliderControls(true) );
         vfp.add( substeps.getControls() );
-        vfp.add( system.getControls() );
+
         vfp.add( drawAxis.getControls());
         
         return vfp.getPanel();

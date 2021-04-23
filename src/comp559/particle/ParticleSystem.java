@@ -77,20 +77,6 @@ public class ParticleSystem implements SceneGraphNode, Function, Filter {
         Particle p12 = new Particle( new Point3d(0.279 * radius,-0.853 * radius, 0.445 * radius), new Vector3d(0, 0, 0), p_index++ );
         Particle p13 = new Particle( new Point3d(0.722 * radius,-0.5244 * radius, -0.445 * radius), new Vector3d(0, 0, 0), p_index++ );
 
-//        radius = 0.8;
-//        Particle p14 = new Particle( new Point3d(0, 0, 0), new Vector3d(0, 0, 0), p_index++);
-//        Particle p15 = new Particle( new Point3d(0, 0, radius), new Vector3d(0, 0, 0), p_index++ );
-//        Particle p16 = new Particle( new Point3d(0, 0, -radius), new Vector3d(0, 0, 0), p_index++ );
-//        Particle p17 = new Particle( new Point3d(0.8973 * radius, 0, 0.445 * radius), new Vector3d(0, 0, 0), p_index++ );
-//        Particle p18 = new Particle( new Point3d(0.722 * radius, 0.5244 * radius, -0.445 * radius), new Vector3d(0, 0, 0), p_index++ );
-//        Particle p19 = new Particle( new Point3d(0.279 * radius, 0.853 * radius, 0.445 * radius), new Vector3d(0, 0, 0), p_index++);
-//        Particle p20 = new Particle( new Point3d(-0.279 * radius, 0.853 * radius, -0.445 * radius), new Vector3d(0, 0, 0), p_index++ );
-//        Particle p21 = new Particle( new Point3d(-0.722 * radius, 0.5244 * radius, 0.445 * radius), new Vector3d(0, 0, 0), p_index++ );
-//        Particle p22 = new Particle( new Point3d(-0.8973 * radius, 0, -0.445 * radius), new Vector3d(0, 0, 0), p_index++ );
-//        Particle p23 = new Particle( new Point3d(-0.722 * radius, -0.5244 * radius, 0.445 * radius), new Vector3d(0, 0, 0), p_index++ );
-//        Particle p24 = new Particle( new Point3d(-0.279 * radius, -0.853 * radius, -0.445 * radius), new Vector3d(0, 0, 0), p_index++);
-//        Particle p25 = new Particle( new Point3d(0.279 * radius,-0.853 * radius, 0.445 * radius), new Vector3d(0, 0, 0), p_index++ );
-//        Particle p26 = new Particle( new Point3d(0.722 * radius,-0.5244 * radius, -0.445 * radius), new Vector3d(0, 0, 0), p_index++ );
         particles.add( p1 );
         particles.add( p2 );
         particles.add( p3 );
@@ -169,15 +155,15 @@ public class ParticleSystem implements SceneGraphNode, Function, Filter {
             Particle triangle_p3;
             triangle_p1 = particles.get(i);
             if (i == 12) {
-                triangle_p2 = particles.get(3);
-                triangle_p3 = particles.get(4);
+                triangle_p2 = particles.get(4);
+                triangle_p3 = particles.get(3);
             }
             else if (i == 11) {
                 triangle_p2 = particles.get(i+1);
                 triangle_p3 = particles.get(3);
             }
             else {
-                if (i % 2 == 0) {
+                if (i % 2 == 1) {
                     triangle_p2 = particles.get(i+1);
                     triangle_p3 = particles.get(i+2);
                 }
@@ -185,6 +171,8 @@ public class ParticleSystem implements SceneGraphNode, Function, Filter {
                     triangle_p2 = particles.get(i+2);
                     triangle_p3 = particles.get(i+1);
                 }
+//                triangle_p2 = particles.get(i+1);
+//                triangle_p3 = particles.get(i+2);
 
             }
 
@@ -197,21 +185,32 @@ public class ParticleSystem implements SceneGraphNode, Function, Filter {
 
             if (i % 2 == 0) {
                 triangle_p1 = particles.get(2);
+                triangle_p3 = particles.get(i);
+                if (i == 11) {
+                    triangle_p2 = particles.get(3);
+                }
+                else if (i == 12) {
+                    triangle_p2  = particles.get(4);
+                }
+                else {
+                    triangle_p2 = particles.get(i+2);
+                }
             }
             else {
                 triangle_p1 = particles.get(1);
+                triangle_p2 = particles.get(i);
+                if (i == 11) {
+                    triangle_p3 = particles.get(3);
+                }
+                else if (i == 12) {
+                    triangle_p3  = particles.get(4);
+                }
+                else {
+                    triangle_p3 = particles.get(i+2);
+                }
             }
 
-            triangle_p2 = particles.get(i);
-            if (i == 11) {
-                triangle_p3 = particles.get(3);
-            }
-            else if (i == 12) {
-                triangle_p3 = particles.get(4);
-            }
-            else {
-                triangle_p3 = particles.get(i+2);
-            }
+
 
             t = new Particle[3];
             t[0] = triangle_p1;
@@ -242,8 +241,16 @@ public class ParticleSystem implements SceneGraphNode, Function, Filter {
 //        triangles.add(t);
 
         surface.createSimpleIcosphere( particles, springs, triangles );
-        surface.subdivideIcosphere( particles, springs, triangles );
+//        surface.subdivideIcosphere( particles, springs, triangles );
+//        surface.subdivideIcosphere( particles, springs, triangles );
+//        surface.subdivideIcosphere( particles, springs, triangles );
 
+        init();
+    }
+
+
+    public void subdivide() {
+        surface.subdivideIcosphere( particles, springs, triangles, smoothness.getFloatValue() );
         init();
     }
 
@@ -699,7 +706,7 @@ public class ParticleSystem implements SceneGraphNode, Function, Filter {
     public DoubleParameter mass = new DoubleParameter( "mass", 0.5, 0.1, 100 );
     public BooleanParameter useGravity = new BooleanParameter( "use gravity", true );
     public DoubleParameter gravity = new DoubleParameter( "gravity", 9.8, 0.01, 1000 );
-    public DoubleParameter springStiffness = new DoubleParameter( "spring stiffness", 480, 0, 10000 );
+    public DoubleParameter springStiffness = new DoubleParameter( "spring stiffness", 4735, 0, 10000 );
     public DoubleParameter springDamping = new DoubleParameter( "spring damping", 1.5, 0, 50 );
     public DoubleParameter viscousDamping = new DoubleParameter( "viscous damping", 0, 0, 10 );
     public DoubleParameter restitution = new DoubleParameter( "r", 0, 0, 1 );
@@ -713,7 +720,7 @@ public class ParticleSystem implements SceneGraphNode, Function, Filter {
     private BooleanParameter usePostStepFix = new BooleanParameter( "use post step fix" , true );
     private BooleanParameter usePenaltyForces = new BooleanParameter( "use penalty forces" , false );
 
-    private BooleanParameter drawSprings = new BooleanParameter( "draw springs", false );
+    private BooleanParameter drawSprings = new BooleanParameter( "draw springs", true );
     private BooleanParameter drawPoints = new BooleanParameter( "draw points", false );
 
     /** parameters for controlling the position and size of an optional obstacle */
@@ -722,10 +729,13 @@ public class ParticleSystem implements SceneGraphNode, Function, Filter {
     private DoubleParameter zpos = new DoubleParameter( "z position", -.5, -2, 2 );
     private DoubleParameter radius = new DoubleParameter( "radius", .5, 0, 2 );
     private DoubleParameter radiusratio = new DoubleParameter( "radius display ratio", .95, .9, 1 );
+    private DoubleParameter smoothness = new DoubleParameter( "smoothness", 1, 0, 1 );
 
     @Override
     public JPanel getControls() {
         VerticalFlowPanel vfp = new VerticalFlowPanel();
+
+        vfp.add( smoothness.getSliderControls(true) );
 
         vfp.add( surface.getControls() );
 

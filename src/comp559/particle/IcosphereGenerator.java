@@ -83,7 +83,7 @@ public class IcosphereGenerator implements SceneGraphNode {
         }
     }
 
-    public void subdivideIcosphere(List<Particle> particles, List<Spring> springs, List<Particle[]> triangles) {
+    public void subdivideIcosphere(List<Particle> particles, List<Spring> springs, List<Particle[]> triangles, float smoothness) {
 
         int num_triangles = triangles.size();
         int num_particles = particles.size();
@@ -119,7 +119,6 @@ public class IcosphereGenerator implements SceneGraphNode {
             Particle[] t_new3 = new Particle[3];
             Particle[] t_new4 = new Particle[3];
 
-            float factor = 1.1f;
             // find spring from p1 to p2
             for (int s = 0; s < p1.springs.size(); s++) {
                 if ((p1.springs.get(s).p2.index == p2.index) || (p1.springs.get(s).p1.index == p2.index )) {
@@ -158,6 +157,9 @@ public class IcosphereGenerator implements SceneGraphNode {
                 pos.set(p1.p);
                 pos.add(p2.p);
                 pos.scale(0.5);
+
+                double dist = pos.distance(p0.p);
+                double factor = 1 + (smoothness * ((1 / dist) - 1));
                 pos.scale(factor);
 
                 p1_new = new Particle(pos, zero, particle_index++);
@@ -171,6 +173,9 @@ public class IcosphereGenerator implements SceneGraphNode {
                 pos.set(p2.p);
                 pos.add(p3.p);
                 pos.scale(0.5);
+
+                double dist = pos.distance(p0.p);
+                double factor = 1 + (smoothness * ((1 / dist) - 1));
                 pos.scale(factor);
 
                 p2_new = new Particle(pos, zero, particle_index++);
@@ -184,6 +189,9 @@ public class IcosphereGenerator implements SceneGraphNode {
                 pos.set(p3.p);
                 pos.add(p1.p);
                 pos.scale(0.5);
+
+                double dist = pos.distance(p0.p);
+                double factor = 1 + (smoothness * ((1 / dist) - 1));
                 pos.scale(factor);
 
                 p3_new = new Particle(pos, zero, particle_index++);
@@ -266,6 +274,9 @@ public class IcosphereGenerator implements SceneGraphNode {
 
         }
 
+        triangles.get(0);
+
+        createSimpleIcosphere(particles, springs,triangles);
     }
 
     public void init(GLAutoDrawable drawable) {
@@ -287,17 +298,17 @@ public class IcosphereGenerator implements SceneGraphNode {
 
             gl.glDisable( GL.GL_CULL_FACE );
             gl.glLightModeli( GL2.GL_LIGHT_MODEL_TWO_SIDE, GL.GL_TRUE );
-//            float[] frontColour = { .71f, .6f, .2f,    1};
             float[] frontColour = { .71f,  0,   .71f, 1};
-            float[] backColour  = { .71f,  0,   .71f, 1};
-            gl.glMaterialfv( GL.GL_FRONT, GL2.GL_DIFFUSE, frontColour, 0 );
-            gl.glMaterialfv( GL.GL_BACK, GL2.GL_DIFFUSE, backColour, 0 );
+//            float[] backColour  = { .71f, .6f, .2f,    1};
+            gl.glMaterialfv( GL.GL_FRONT_AND_BACK, GL2.GL_DIFFUSE, frontColour, 0 );
+//            gl.glMaterialfv( GL.GL_BACK, GL2.GL_DIFFUSE, backColour, 0 );
 
             if ( drawSmoothShaded.getValue() ) {
                 // note that this could be made much faster by setting
                 // up index and vertex buffers and using glDrawElements
                 // but this is just a rendering efficiency issue.
                 Vector3d n;
+
                 // compute per vertex normals!
                 for (int i = 0; i < triangle_list.size(); i++) {
                     Point3d p1 = triangle_list.get(i)[0].p;
@@ -309,6 +320,7 @@ public class IcosphereGenerator implements SceneGraphNode {
                     n.cross(v1,v2);
                     n.normalize();
                 }
+
                 gl.glBegin(GL.GL_TRIANGLES);
                 for (int i = 0; i < triangle_list.size(); i++) {
                     Particle p1 = triangle_list.get(i)[0];
@@ -316,7 +328,6 @@ public class IcosphereGenerator implements SceneGraphNode {
                     Particle p3 = triangle_list.get(i)[2];
                     int p2_index = p2.index;
                     int p3_index = p3.index;
-
 
                     n = gridNormals[p1.index]; gl.glNormal3d( n.x,n.y,n.z);
                     gl.glVertex3d(p1.p.x,p1.p.y,p1.p.z);
@@ -324,10 +335,10 @@ public class IcosphereGenerator implements SceneGraphNode {
                     gl.glVertex3d(p2.p.x,p2.p.y,p2.p.z);
                     n = gridNormals[p3_index]; gl.glNormal3d( n.x,n.y,n.z);
                     gl.glVertex3d(p3.p.x,p3.p.y,p3.p.z);
-
                 }
-
                 gl.glEnd();
+
+
             } else {
                 Vector3d n = new Vector3d();
                 gl.glBegin(GL.GL_TRIANGLES);
@@ -335,13 +346,12 @@ public class IcosphereGenerator implements SceneGraphNode {
                     Particle p1 = triangle_list.get(i)[0];
                     Particle p2 = triangle_list.get(i)[1];
                     Particle p3 = triangle_list.get(i)[2];
-                    int p2_index = p2.index;
-                    int p3_index = p3.index;
 
                     v1.sub(p2.p,p1.p);
                     v2.sub(p3.p,p1.p);
                     n.cross(v1,v2);
                     n.normalize();
+
                     gl.glNormal3d(n.x,n.y,n.z);
                     gl.glVertex3d(p1.p.x,p1.p.y,p1.p.z);
                     gl.glVertex3d(p2.p.x,p2.p.y,p2.p.z);
@@ -349,6 +359,7 @@ public class IcosphereGenerator implements SceneGraphNode {
 
                 }
                 gl.glEnd();
+
             }
             gl.glLightModeli( GL2.GL_LIGHT_MODEL_TWO_SIDE, GL.GL_FALSE );
             gl.glEnable( GL.GL_CULL_FACE );
@@ -356,13 +367,11 @@ public class IcosphereGenerator implements SceneGraphNode {
     }
 
     private BooleanParameter drawSurface = new BooleanParameter( "draw grid", true );
-    private IntParameter gridDimension = new IntParameter ("grid dimension", 15, 2, 40 );
-    private BooleanParameter drawSmoothShaded = new BooleanParameter( "smooth shaded", true );
+    private BooleanParameter drawSmoothShaded = new BooleanParameter( "smooth shaded", false );
 
     @Override
     public JPanel getControls() {
         VerticalFlowPanel vfp = new VerticalFlowPanel();
-        vfp.add( gridDimension.getControls() );
         vfp.add( drawSurface.getControls() );
         vfp.add( drawSmoothShaded.getControls() );
         return vfp.getPanel();
