@@ -1,5 +1,7 @@
 # Squishy Ball
 
+* I havent added the video yet I'm going to add it soon.
+* 
 * Run configurations are set for intelliJ.
 
 * Click and scroll to zoom in.
