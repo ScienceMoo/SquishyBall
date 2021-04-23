@@ -1,5 +1,7 @@
 # Squishy Ball
 
-Click and scroll to zoom in.
+* Run configurations are set for intelliJ.
 
-Starts with an icosahedron, can subdivide it a few times before it crashes.
+* Click and scroll to zoom in.
+
+* Starts with an icosahedron, can subdivide it a few times before it crashes.
