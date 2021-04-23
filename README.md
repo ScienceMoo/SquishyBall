@@ -1,6 +1,6 @@
 # Squishy Ball
 
-* video = squishy.mov
+* video = https://www.youtube.com/watch?v=-ZCJqIITaxQ
 
 * Run configurations are set for intelliJ.
 
