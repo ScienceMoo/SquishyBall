@@ -61,14 +61,14 @@ public class IcosphereGenerator implements SceneGraphNode {
      * @param particles
      * @param springs
      */
-    public void createSimpleIcosphere(List<Particle> particles, List<Spring> springs, List<Particle[]> triangles ) {
-
+    public void createSimpleIcosphere(ParticleSystem system, List<Particle> particles, List<Spring> springs, List<Particle[]> triangles, double radius ) {
+        int numInnerLayers = 1;
         Point3d p = new Point3d();
         Vector3d zero = new Vector3d( 0,0,0 );
 
         int N = particles.size();
 //        double particleMass = 1.0 / (N*N);
-        mesh = new Particle[N];
+        mesh = new Particle[N + (N * numInnerLayers)];
         triangle_list = new LinkedList<Particle[]>();
 
         gridNormals = new Vector3d[N];
@@ -81,9 +81,31 @@ public class IcosphereGenerator implements SceneGraphNode {
         for (int i = 0; i < triangles.size(); i++) {
             triangle_list.add(triangles.get(i));
         }
+
+        int p_index = N;
+        int s_index = springs.size();
+        double r = radius;
+        if (numInnerLayers > 0) {
+            while (mesh[0].springs.size() > 0) {
+                Spring s = mesh[0].springs.get(0);
+                system.removeSpring(s.p1, s.p2);
+            }
+        }
+        for (int i = 0; i < numInnerLayers; i++) {
+            r = r * 0.8;
+            for (int v = 1; v < N; v++) {
+                Point3d pos = new Point3d();
+                pos.set(mesh[v].p);
+                pos.scale((r/radius));
+                Particle p_new = new Particle(pos, zero, p_index++);
+                mesh[p_index-1] = p_new;
+                springs.add(new Spring(mesh[v], p_new, s_index++));
+                springs.add(new Spring(mesh[0], p_new, s_index++));
+            }
+        }
     }
 
-    public void subdivideIcosphere(List<Particle> particles, List<Spring> springs, List<Particle[]> triangles, float smoothness) {
+    public void subdivideIcosphere(ParticleSystem system, List<Particle> particles, List<Spring> springs, List<Particle[]> triangles, float smoothness, double radius) {
 
         int num_triangles = triangles.size();
         int num_particles = particles.size();
@@ -159,7 +181,7 @@ public class IcosphereGenerator implements SceneGraphNode {
                 pos.scale(0.5);
 
                 double dist = pos.distance(p0.p);
-                double factor = 1 + (smoothness * ((1 / dist) - 1));
+                double factor = 1 + (smoothness * ((radius / dist) - 1));
                 pos.scale(factor);
 
                 p1_new = new Particle(pos, zero, particle_index++);
@@ -175,7 +197,7 @@ public class IcosphereGenerator implements SceneGraphNode {
                 pos.scale(0.5);
 
                 double dist = pos.distance(p0.p);
-                double factor = 1 + (smoothness * ((1 / dist) - 1));
+                double factor = 1 + (smoothness * ((radius / dist) - 1));
                 pos.scale(factor);
 
                 p2_new = new Particle(pos, zero, particle_index++);
@@ -191,7 +213,7 @@ public class IcosphereGenerator implements SceneGraphNode {
                 pos.scale(0.5);
 
                 double dist = pos.distance(p0.p);
-                double factor = 1 + (smoothness * ((1 / dist) - 1));
+                double factor = 1 + (smoothness * ((radius / dist) - 1));
                 pos.scale(factor);
 
                 p3_new = new Particle(pos, zero, particle_index++);
@@ -248,17 +270,17 @@ public class IcosphereGenerator implements SceneGraphNode {
             Particle p3_new = particles_temp2.get(i)[2];
 
             // side 1
-            springs.remove(s1);
+            system.removeSpring(s1.p1, s1.p2);
             springs.add(new Spring(p1, p1_new, spring_index++));
             springs.add(new Spring(p1_new, p2, spring_index++));
 
             // side 2
-            springs.remove(s2);
+            system.removeSpring(s2.p1, s2.p2);
             springs.add(new Spring(p2, p2_new, spring_index++));
             springs.add(new Spring(p2_new, p3, spring_index++));
 
             // side 3
-            springs.remove(s3);
+            system.removeSpring(s3.p1, s3.p2);
             springs.add(new Spring(p3, p3_new, spring_index++));
             springs.add(new Spring(p3_new, p1, spring_index++));
 
@@ -276,7 +298,7 @@ public class IcosphereGenerator implements SceneGraphNode {
 
         triangles.get(0);
 
-        createSimpleIcosphere(particles, springs,triangles);
+        createSimpleIcosphere(system, particles, springs,triangles, radius);
     }
 
     public void init(GLAutoDrawable drawable) {
@@ -298,7 +320,7 @@ public class IcosphereGenerator implements SceneGraphNode {
 
             gl.glDisable( GL.GL_CULL_FACE );
             gl.glLightModeli( GL2.GL_LIGHT_MODEL_TWO_SIDE, GL.GL_TRUE );
-            float[] frontColour = { .71f,  0,   .71f, 1};
+            float[] frontColour = { 0,  1,   0, .5f};
 //            float[] backColour  = { .71f, .6f, .2f,    1};
             gl.glMaterialfv( GL.GL_FRONT_AND_BACK, GL2.GL_DIFFUSE, frontColour, 0 );
 //            gl.glMaterialfv( GL.GL_BACK, GL2.GL_DIFFUSE, backColour, 0 );
@@ -315,8 +337,8 @@ public class IcosphereGenerator implements SceneGraphNode {
                     Point3d p2 = triangle_list.get(i)[1].p;
                     Point3d p3 = triangle_list.get(i)[2].p;
                     n = gridNormals[triangle_list.get(i)[0].index];
-                    v1.sub( p1, p2);
-                    v2.sub( p1, p3 );
+                    v1.sub(p2,p1);
+                    v2.sub(p3,p1);
                     n.cross(v1,v2);
                     n.normalize();
                 }
@@ -326,14 +348,12 @@ public class IcosphereGenerator implements SceneGraphNode {
                     Particle p1 = triangle_list.get(i)[0];
                     Particle p2 = triangle_list.get(i)[1];
                     Particle p3 = triangle_list.get(i)[2];
-                    int p2_index = p2.index;
-                    int p3_index = p3.index;
 
                     n = gridNormals[p1.index]; gl.glNormal3d( n.x,n.y,n.z);
                     gl.glVertex3d(p1.p.x,p1.p.y,p1.p.z);
-                    n = gridNormals[p2_index]; gl.glNormal3d( n.x,n.y,n.z);
+                    n = gridNormals[p2.index]; gl.glNormal3d( n.x,n.y,n.z);
                     gl.glVertex3d(p2.p.x,p2.p.y,p2.p.z);
-                    n = gridNormals[p3_index]; gl.glNormal3d( n.x,n.y,n.z);
+                    n = gridNormals[p3.index]; gl.glNormal3d( n.x,n.y,n.z);
                     gl.glVertex3d(p3.p.x,p3.p.y,p3.p.z);
                 }
                 gl.glEnd();

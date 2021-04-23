@@ -62,20 +62,21 @@ public class ParticleSystem implements SceneGraphNode, Function, Filter {
         int p_index = 0;
 
 //         use this to test!
-        double radius = 1;
-        Particle p1 = new Particle( new Point3d(0, 0, 0), new Vector3d(0, 0, 0), p_index++);
-        Particle p2 = new Particle( new Point3d(0, 0, radius), new Vector3d(0, 0, 0), p_index++ );
-        Particle p3 = new Particle( new Point3d(0, 0, -radius), new Vector3d(0, 0, 0), p_index++ );
-        Particle p4 = new Particle( new Point3d(0.8973 * radius, 0, 0.445 * radius), new Vector3d(0, 0, 0), p_index++ );
-        Particle p5 = new Particle( new Point3d(0.722 * radius, 0.5244 * radius, -0.445 * radius), new Vector3d(0, 0, 0), p_index++ );
-        Particle p6 = new Particle( new Point3d(0.279 * radius, 0.853 * radius, 0.445 * radius), new Vector3d(0, 0, 0), p_index++);
-        Particle p7 = new Particle( new Point3d(-0.279 * radius, 0.853 * radius, -0.445 * radius), new Vector3d(0, 0, 0), p_index++ );
-        Particle p8 = new Particle( new Point3d(-0.722 * radius, 0.5244 * radius, 0.445 * radius), new Vector3d(0, 0, 0), p_index++ );
-        Particle p9 = new Particle( new Point3d(-0.8973 * radius, 0, -0.445 * radius), new Vector3d(0, 0, 0), p_index++ );
-        Particle p10 = new Particle( new Point3d(-0.722 * radius, -0.5244 * radius, 0.445 * radius), new Vector3d(0, 0, 0), p_index++ );
-        Particle p11 = new Particle( new Point3d(-0.279 * radius, -0.853 * radius, -0.445 * radius), new Vector3d(0, 0, 0), p_index++);
-        Particle p12 = new Particle( new Point3d(0.279 * radius,-0.853 * radius, 0.445 * radius), new Vector3d(0, 0, 0), p_index++ );
-        Particle p13 = new Particle( new Point3d(0.722 * radius,-0.5244 * radius, -0.445 * radius), new Vector3d(0, 0, 0), p_index++ );
+        double radius = radiusSlider.getValue();
+        Particle[] icosahedron = new Particle[13];
+        Particle p1 = icosahedron[0] = new Particle( new Point3d(0, 0, 0), new Vector3d(0, 0, 0), p_index++);
+        Particle p2 = icosahedron[1] = new Particle( new Point3d(0, 0, radius), new Vector3d(0, 0, 0), p_index++ );
+        Particle p3 = icosahedron[2] = new Particle( new Point3d(0, 0, -radius), new Vector3d(0, 0, 0), p_index++ );
+        Particle p4 = icosahedron[3] = new Particle( new Point3d(0.8973 * radius, 0, 0.445 * radius), new Vector3d(0, 0, 0), p_index++ );
+        Particle p5 = icosahedron[4] = new Particle( new Point3d(0.722 * radius, 0.5244 * radius, -0.445 * radius), new Vector3d(0, 0, 0), p_index++ );
+        Particle p6 = icosahedron[5] = new Particle( new Point3d(0.279 * radius, 0.853 * radius, 0.445 * radius), new Vector3d(0, 0, 0), p_index++);
+        Particle p7 = icosahedron[6] = new Particle( new Point3d(-0.279 * radius, 0.853 * radius, -0.445 * radius), new Vector3d(0, 0, 0), p_index++ );
+        Particle p8 = icosahedron[7] = new Particle( new Point3d(-0.722 * radius, 0.5244 * radius, 0.445 * radius), new Vector3d(0, 0, 0), p_index++ );
+        Particle p9 = icosahedron[8] = new Particle( new Point3d(-0.8973 * radius, 0, -0.445 * radius), new Vector3d(0, 0, 0), p_index++ );
+        Particle p10 = icosahedron[9] = new Particle( new Point3d(-0.722 * radius, -0.5244 * radius, 0.445 * radius), new Vector3d(0, 0, 0), p_index++ );
+        Particle p11 = icosahedron[10] = new Particle( new Point3d(-0.279 * radius, -0.853 * radius, -0.445 * radius), new Vector3d(0, 0, 0), p_index++);
+        Particle p12 = icosahedron[11] = new Particle( new Point3d(0.279 * radius,-0.853 * radius, 0.445 * radius), new Vector3d(0, 0, 0), p_index++ );
+        Particle p13 = icosahedron[12] = new Particle( new Point3d(0.722 * radius,-0.5244 * radius, -0.445 * radius), new Vector3d(0, 0, 0), p_index++ );
 
         particles.add( p1 );
         particles.add( p2 );
@@ -219,38 +220,13 @@ public class ParticleSystem implements SceneGraphNode, Function, Filter {
             triangles.add(t);
         }
 
-        // triangle test
-//        Particle p1 = new Particle( new Point3d(300, 310, 10), new Vector3d(0, 0, 0), 0 );
-//        Particle p2 = new Particle( new Point3d(310, 310, -10), new Vector3d(0, 0, 0), 1 );
-//        Particle p3 = new Particle( new Point3d(290, 310, -10), new Vector3d(0, 0, 0), 2 );
-//        Particle p4 = new Particle( new Point3d(300, 300, 0), new Vector3d(0, 0, 0), 3 );
-//        particles.add( p1 );
-//        particles.add( p2 );
-//        particles.add( p3 );
-//        particles.add( p4 );
-//        p1.pinned = true;
-//        p2.pinned = true;
-//        p3.pinned = true;
-//        springs.add( new Spring( p1, p2, 0 ) );
-//        springs.add( new Spring( p2, p3, 1 ) );
-//        springs.add( new Spring( p3, p1, 2) );
-//        Particle[] t = new Particle[3];
-//        t[0] = p1;
-//        t[1] = p2;
-//        t[2] = p3;
-//        triangles.add(t);
-
-        surface.createSimpleIcosphere( particles, springs, triangles );
-//        surface.subdivideIcosphere( particles, springs, triangles );
-//        surface.subdivideIcosphere( particles, springs, triangles );
-//        surface.subdivideIcosphere( particles, springs, triangles );
-
+        surface.createSimpleIcosphere( this, particles, springs, triangles, radiusSlider.getValue() );
         init();
     }
 
 
     public void subdivide() {
-        surface.subdivideIcosphere( particles, springs, triangles, smoothness.getFloatValue() );
+        surface.subdivideIcosphere( this, particles, springs, triangles, smoothness.getFloatValue(), radiusSlider.getValue() );
         init();
     }
 
@@ -729,13 +705,15 @@ public class ParticleSystem implements SceneGraphNode, Function, Filter {
     private DoubleParameter zpos = new DoubleParameter( "z position", -.5, -2, 2 );
     private DoubleParameter radius = new DoubleParameter( "radius", .5, 0, 2 );
     private DoubleParameter radiusratio = new DoubleParameter( "radius display ratio", .95, .9, 1 );
-    private DoubleParameter smoothness = new DoubleParameter( "smoothness", 1, 0, 1 );
+    private DoubleParameter smoothness = new DoubleParameter( "subdivision smoothness", 1, 0, 1 );
+    private DoubleParameter radiusSlider = new DoubleParameter( "radius", 2, 0.1, 3 );
 
     @Override
     public JPanel getControls() {
         VerticalFlowPanel vfp = new VerticalFlowPanel();
 
         vfp.add( smoothness.getSliderControls(true) );
+        vfp.add( radiusSlider.getSliderControls(false) );
 
         vfp.add( surface.getControls() );
 
@@ -756,7 +734,7 @@ public class ParticleSystem implements SceneGraphNode, Function, Filter {
         vfp.add( xpos.getSliderControls(false) );
         vfp.add( ypos.getSliderControls(false) );
         vfp.add( zpos.getSliderControls(false) );
-        vfp.add( radius.getSliderControls(false) );
+
         vfp.add( radiusratio.getSliderControls(false) );
 
         vfp.add( drawSprings.getControls() );
