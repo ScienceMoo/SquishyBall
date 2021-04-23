@@ -1,6 +1,6 @@
 # Squishy Ball
 
-* I havent added the video yet I'm going to add it soon.
+* video = squishy.mov
 
 * Run configurations are set for intelliJ.
 
