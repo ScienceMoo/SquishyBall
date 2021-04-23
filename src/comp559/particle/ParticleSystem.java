@@ -91,7 +91,7 @@ public class ParticleSystem implements SceneGraphNode, Function, Filter {
         particles.add( p11 );
         particles.add( p12 );
         particles.add( p13 );
-//         p1.pinned = true;
+//         p2.pinned = true;
 
         int s_index = 0;
         // middle vertex

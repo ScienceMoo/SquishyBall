@@ -308,8 +308,6 @@ public class IcosphereGenerator implements SceneGraphNode {
 
         }
 
-        triangles.get(0);
-
         createSimpleIcosphere(system, particles, springs,triangles, radius);
     }
 
@@ -332,11 +330,12 @@ public class IcosphereGenerator implements SceneGraphNode {
 
             gl.glDisable( GL.GL_CULL_FACE );
             gl.glLightModeli( GL2.GL_LIGHT_MODEL_TWO_SIDE, GL.GL_TRUE );
-            float[] frontColour = { 0,  1,   0, .5f};
+            float[] frontColour = { 1.0f,  .2f,   .2f, 1.0f};
 //            float[] backColour  = { .71f, .6f, .2f,    1};
             gl.glMaterialfv( GL.GL_FRONT_AND_BACK, GL2.GL_DIFFUSE, frontColour, 0 );
 //            gl.glMaterialfv( GL.GL_BACK, GL2.GL_DIFFUSE, backColour, 0 );
 
+            Particle p0 = mesh[0];
             if ( drawSmoothShaded.getValue() ) {
                 // note that this could be made much faster by setting
                 // up index and vertex buffers and using glDrawElements
@@ -349,9 +348,21 @@ public class IcosphereGenerator implements SceneGraphNode {
                     Point3d p2 = triangle_list.get(i)[1].p;
                     Point3d p3 = triangle_list.get(i)[2].p;
                     n = gridNormals[triangle_list.get(i)[0].index];
-                    v1.sub(p2,p1);
-                    v2.sub(p3,p1);
-                    n.cross(v1,v2);
+                    v1.sub(p1,p2);
+                    v2.sub(p1,p3);
+                    n.cross(v1, v2);
+                    n.normalize();
+
+                    n = gridNormals[triangle_list.get(i)[1].index];
+                    v1.sub(p2,p3);
+                    v2.sub(p2,p1);
+                    n.cross(v1, v2);
+                    n.normalize();
+
+                    n = gridNormals[triangle_list.get(i)[2].index];
+                    v1.sub(p3,p1);
+                    v2.sub(p3,p2);
+                    n.cross(v1, v2);
                     n.normalize();
                 }
 

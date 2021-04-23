@@ -76,6 +76,7 @@ public class SquishyApp implements SceneGraphNode, Interactor {
     @Override
     public void display(GLAutoDrawable drawable) {
         GL2 gl = drawable.getGL().getGL2();
+        gl.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
         if ( run.getValue() ) {
             for ( int i = 0; i < substeps.getValue(); i++ ) {
