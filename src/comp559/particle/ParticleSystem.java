@@ -92,20 +92,21 @@ public class ParticleSystem implements SceneGraphNode, Function, Filter {
         particles.add( p12 );
         particles.add( p13 );
 //         p1.pinned = true;
-        // middle vertex
+
         int s_index = 0;
-        springs.add( new Spring( p1, p2, s_index++) );
-        springs.add( new Spring( p1, p3, s_index++ ) );
-        springs.add( new Spring( p1, p4, s_index++ ) );
-        springs.add( new Spring( p1, p5, s_index++ ) );
-        springs.add( new Spring( p1, p6, s_index++ ) );
-        springs.add( new Spring( p1, p7, s_index++ ) );
-        springs.add( new Spring( p1, p8, s_index++ ) );
-        springs.add( new Spring( p1, p9, s_index++ ) );
-        springs.add( new Spring( p1, p10, s_index++ ) );
-        springs.add( new Spring( p1, p11, s_index++ ) );
-        springs.add( new Spring( p1, p12, s_index++ ) );
-        springs.add( new Spring( p1, p13, s_index++ ) );
+        // middle vertex
+//        springs.add( new Spring( p1, p2, s_index++) );
+//        springs.add( new Spring( p1, p3, s_index++ ) );
+//        springs.add( new Spring( p1, p4, s_index++ ) );
+//        springs.add( new Spring( p1, p5, s_index++ ) );
+//        springs.add( new Spring( p1, p6, s_index++ ) );
+//        springs.add( new Spring( p1, p7, s_index++ ) );
+//        springs.add( new Spring( p1, p8, s_index++ ) );
+//        springs.add( new Spring( p1, p9, s_index++ ) );
+//        springs.add( new Spring( p1, p10, s_index++ ) );
+//        springs.add( new Spring( p1, p11, s_index++ ) );
+//        springs.add( new Spring( p1, p12, s_index++ ) );
+//        springs.add( new Spring( p1, p13, s_index++ ) );
 
         // top vertex to top row
         springs.add( new Spring( p2, p4, s_index++ ) );

@@ -62,11 +62,12 @@ public class IcosphereGenerator implements SceneGraphNode {
      * @param springs
      */
     public void createSimpleIcosphere(ParticleSystem system, List<Particle> particles, List<Spring> springs, List<Particle[]> triangles, double radius ) {
-        int numInnerLayers = 1;
+        int numInnerLayers = 0;
         Point3d p = new Point3d();
         Vector3d zero = new Vector3d( 0,0,0 );
 
         int N = particles.size();
+        int num_springs = springs.size();
 //        double particleMass = 1.0 / (N*N);
         mesh = new Particle[N + (N * numInnerLayers)];
         triangle_list = new LinkedList<Particle[]>();
@@ -85,22 +86,33 @@ public class IcosphereGenerator implements SceneGraphNode {
         int p_index = N;
         int s_index = springs.size();
         double r = radius;
-        if (numInnerLayers > 0) {
-            while (mesh[0].springs.size() > 0) {
-                Spring s = mesh[0].springs.get(0);
-                system.removeSpring(s.p1, s.p2);
+        if (numInnerLayers == 0) {
+            for (int i = 1; i < N; i++) {
+                springs.add(new Spring(mesh[0], mesh[i], s_index++));
             }
         }
         for (int i = 0; i < numInnerLayers; i++) {
-            r = r * 0.8;
+            r = r * (1.0f/numInnerLayers);
             for (int v = 1; v < N; v++) {
                 Point3d pos = new Point3d();
-                pos.set(mesh[v].p);
+                pos.set(particles.get(v).p);
                 pos.scale((r/radius));
                 Particle p_new = new Particle(pos, zero, p_index++);
                 mesh[p_index-1] = p_new;
+                particles.add(p_new);
                 springs.add(new Spring(mesh[v], p_new, s_index++));
-                springs.add(new Spring(mesh[0], p_new, s_index++));
+                springs.add(new Spring(mesh[0], p_new, 12 + s_index++));
+            }
+            for (int s = 0; s < num_springs; s++) {
+                Spring s_outer = springs.get(s);
+
+                int index_outer1 = s_outer.p1.index;
+                int index_outer2 = s_outer.p2.index;
+
+                int index_new1 = index_outer1 + (N-1);
+                int index_new2 = index_outer2 + (N-1);
+
+                springs.add(new Spring(mesh[index_new1], mesh[index_new2], s_index++));
             }
         }
     }
@@ -290,9 +302,9 @@ public class IcosphereGenerator implements SceneGraphNode {
             springs.add(new Spring(p3_new, p1_new, spring_index++));
 
             // inside spring
-            springs.add(new Spring(p0, p1_new, spring_index++));
-            springs.add(new Spring(p0, p2_new, spring_index++));
-            springs.add(new Spring(p0, p3_new, spring_index++));
+//            springs.add(new Spring(p0, p1_new, spring_index++));
+//            springs.add(new Spring(p0, p2_new, spring_index++));
+//            springs.add(new Spring(p0, p3_new, spring_index++));
 
         }
 
