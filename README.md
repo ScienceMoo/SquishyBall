@@ -1,15 +1,12 @@
 # Squishy Ball
 
-* video = https://www.youtube.com/watch?v=-ZCJqIITaxQ
+Welcome to my first squishy ball physics simulation using Java! See (particlesystem.java)[src/comp559/particle/ParticleSystem.java] for the icosahedron formula. Run configurations are set for intelliJ.
+* Video demonstration = https://www.youtube.com/watch?v=-ZCJqIITaxQ
 
-* Run configurations are set for intelliJ.
-
+## The GUI
 * Click and scroll to zoom in.
-
 * Starts with an icosahedron, can subdivide it a few times before it crashes.
-
 * Decrease spring damping for more jiggly ball.
-
 * Keyboard commands:
   * 1: forward euler (not recomended)
   * 2: symplectic euler
