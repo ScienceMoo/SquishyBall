@@ -3,10 +3,10 @@
 Welcome to my first squishy ball physics simulation using Java! See [particlesystem.java](src/comp559/particle/ParticleSystem.java) for the icosahedron formula. Run configurations are set for intelliJ.
 * Check out the [report](report.pdf) and [video demonstration](https://www.youtube.com/watch?v=-ZCJqIITaxQ)!
 
-![pic](pictures/pic1.png)
-![pic](pictures/pic2.png)
-![pic](pictures/pic3.png)
-![pic](pictures/pic4.png)
+<img src="pictures/pic1.png" alt="pic" width="200"/>
+<img src="pictures/pic2.png" alt="pic" width="200"/>
+<img src="pictures/pic3.png" alt="pic" width="200"/>
+<img src="pictures/pic4.png" alt="pic" width="200"/>
 
 ## The GUI
 * Click and scroll to zoom in.
