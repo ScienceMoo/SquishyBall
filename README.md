@@ -9,6 +9,7 @@ Welcome to my first squishy ball physics simulation using Java! See [particlesys
  <img src="pictures/pic3.png" alt="pic" width="200"/>
  <img src="pictures/pic4.png" alt="pic" width="200"/>
 </p>
+
 ## The GUI
 * Click and scroll to zoom in.
 * Starts with an icosahedron, can subdivide it a few times before it crashes.
